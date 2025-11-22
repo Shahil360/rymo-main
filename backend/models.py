@@ -9,7 +9,7 @@ class Product(BaseModel):
 class UserSignup(BaseModel):
     name: str
     email: str
-    phone: str
+    mobile: str
     password: str
     is_admin: int = 0
 

@@ -56,7 +56,7 @@ def get_product(product_id: int):
 
 # Signup API
 @app.post("/signup")
-def signup(user: User):
+def signup(user: UserSignup):
     db = get_db()
     cursor = db.cursor()
 
@@ -74,7 +74,7 @@ def signup(user: User):
 
 # Login API
 @app.post("/login")
-def login(data: LoginForm):
+def login(data: UserLogin):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
@@ -82,7 +82,6 @@ def login(data: LoginForm):
         "SELECT * FROM users WHERE email=%s AND password=%s",
         (data.email, data.password)
     )
-
     user = cursor.fetchone()
     cursor.close()
     db.close()
@@ -92,8 +91,13 @@ def login(data: LoginForm):
 
     return {
         "message": "Login successful",
-        "user_id": user["id"],
-        "is_admin": user["is_admin"]
+        "user": {
+            "id": user["id"],
+            "name": user["name"],       # <-- add this
+            "email": user["email"],     # optional
+            "isAdmin": user["is_admin"]
+        }
     }
+
 
 

@@ -431,17 +431,20 @@
       <script src="script.js"></script>
 
       <script>
-        const navLogin = document.querySelector(".links li:last-child a");
-        const user = localStorage.getItem("user");
-        
-        if (user) {
-            navLogin.textContent = "Sign out";
-            navLogin.href = "#";
-            navLogin.onclick = () => {
-                localStorage.removeItem("user");
-                window.location.reload();
-            };
-        }
+        window.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const loginLink = document.querySelector(".links li a[href='login.html']");
+
+    if (user && loginLink) {
+        loginLink.textContent = "Sign Out";
+        loginLink.href = "#";
+        loginLink.onclick = () => {
+            localStorage.removeItem("user");
+            window.location.href = "login.html";
+        };
+    }
+});
+
         </script>    
 
 </body>

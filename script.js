@@ -1,3 +1,9 @@
+// Global function for scroll to top button
+function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+
 window.onload = async function() {
   // Scroll button
   var mybutton = document.getElementById("myBtn");
@@ -8,11 +14,6 @@ window.onload = async function() {
           mybutton.style.display = "none";
       }
   };
-
-  function topFunction() {
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
-  }
 
   // Sidebar open/close
   let navLinks = document.querySelector(".nav-links");
@@ -33,31 +34,46 @@ window.onload = async function() {
 
   // Sticky navbar
   window.addEventListener("scroll", function() {
-      if(this.scrollY > 100) {
-          document.querySelector(".nav").classList.add("sticky");
-      } else {
-          document.querySelector(".nav").classList.remove("sticky");
+      const nav = document.querySelector(".nav");
+      if(nav) {
+          if(this.scrollY > 100) {
+              nav.classList.add("sticky");
+          } else {
+              nav.classList.remove("sticky");
+          }
       }
   });
 
   // Load products from API
-  const res = await fetch("http://127.0.0.1:8000/products");
-  const products = await res.json();
-  const container = document.getElementById("products-container");
-  if(container) {
-      container.innerHTML = "";
-      products.forEach(p => {
-          container.innerHTML += `
-              <div class="col span_1_of_4 box card">
-                  <img src="${p.image}" alt="Product Image" class="product-img">
-                  <h3>${p.name}</h3>
-                  <img src="${p.review_image}" alt="Review Image" class="review-img">
-                  <p>${p.price}$</p><br>
-                  <center>
-                      <a href="view-product.html?id=${p.id}" class="btn1">View Product</a>
-                  </center>
-              </div>
-          `;
-      });
+  try {
+      const res = await fetch("http://127.0.0.1:8000/products");
+      if(!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const products = await res.json();
+      const container = document.getElementById("products-container");
+      if(container) {
+          container.innerHTML = "";
+          products.forEach(p => {
+              container.innerHTML += `
+                  <div class="col span_1_of_4 box card">
+                      <img src="${p.image}" alt="Product Image" class="product-img">
+                      <h3>${p.name}</h3>
+                      <img src="${p.review_image}" alt="Review Image" class="review-img">
+                      <p>${p.price}$</p><br>
+                      <center>
+                          <a href="view-product.html?id=${p.id}" class="btn1">View Product</a>
+                      </center>
+                  </div>
+              `;
+          });
+      }
+  } catch(error) {
+      console.error("Error loading products:", error);
+      const container = document.getElementById("products-container");
+      if(container) {
+          container.innerHTML = "<p>Unable to load products. Please try again later.</p>";
+      }
   }
+  
 };

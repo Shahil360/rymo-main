@@ -210,58 +210,82 @@
       <script src="design.js"></script>
 
       <script>
-        const loginForm = document.querySelector("form.login");
-        const signupForm = document.querySelector("form.signup");
+        document.addEventListener("DOMContentLoaded", () => {
+            const signupForm = document.querySelector("form.signup");
+            signupForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
         
-        // SIGNUP
-        signupForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
+                const name = signupForm.querySelector("input[placeholder='Name']").value;
+                const email = signupForm.querySelector("input[placeholder='Email Address']").value;
+                const mobile = signupForm.querySelector("input[placeholder='Mobile Number']").value;
+                const password = signupForm.querySelectorAll("input[placeholder='Password']")[0].value;
         
-            const data = {
-                name: signupForm.querySelector("input[placeholder='Name']").value,
-                email: signupForm.querySelector("input[placeholder='Email Address']").value,
-                phone: signupForm.querySelector("input[placeholder='Mobile Number']").value,
-                password: signupForm.querySelectorAll("input[type='password']")[0].value
-            };
+                try {
+                    const res = await fetch("http://127.0.0.1:8000/signup", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name, email, mobile, password, is_admin: 0 })
+                    });
         
-            const res = await fetch("http://127.0.0.1:8000/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+                    const data = await res.json();
+                    console.log(data);
+        
+                    if (!res.ok) {
+                        alert(data.detail || "Signup failed");
+                        return;
+                    }
+        
+                    alert("Signup successful!");
+                    window.location.href = "index.html";
+        
+                } catch(err) {
+                    console.error(err);
+                    alert("Could not connect to server.");
+                }
             });
-        
-            alert("Signup successful! You can now login.");
-        });
-        
-        
-        // LOGIN
-        loginForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-        
-            const data = {
-                email: loginForm.querySelector("input[placeholder='Email Address']").value,
-                password: loginForm.querySelector("input[placeholder='Password']").value
-            };
-        
-            const res = await fetch("http://127.0.0.1:8000/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
-        
-            if (!res.ok) {
-                alert("Invalid email or password");
-                return;
-            }
-        
-            const user = await res.json();
-        
-            // store login info locally
-            localStorage.setItem("user", JSON.stringify(user.user));
-        
-            window.location.href = "index.html";
         });
         </script>
+        
+        <script>document.addEventListener("DOMContentLoaded", () => {
+          const loginForm = document.querySelector("form.login");
+          
+          loginForm.addEventListener("submit", async (e) => {
+              e.preventDefault();
+      
+              const email = loginForm.querySelector("input[placeholder='Email Address']").value;
+              const password = loginForm.querySelector("input[placeholder='Password']").value;
+      
+              const payload = { email, password };
+      
+              try {
+                  const res = await fetch("http://127.0.0.1:8000/login", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(payload)
+                  });
+      
+                  const data = await res.json();
+      
+                  if (!res.ok) {
+                      alert(data.detail || "Login failed");
+                      return;
+                  }
+      
+                  alert("Login successful! Welcome " + data.user.name);
+                  
+                  // Save user info in localStorage/sessionStorage
+                  localStorage.setItem("user", JSON.stringify(data.user));
+      
+                  // Redirect or update navbar
+                  window.location.href = "index.html";
+      
+              } catch (err) {
+                  console.error(err);
+                  alert("Could not connect to server.");
+              }
+          });
+      });
+      </script>
 </body>
 </html>
 
