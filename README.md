@@ -21,7 +21,6 @@ A full-stack e-commerce web application built using **FastAPI (Python)** and **M
 - Python
 - FastAPI
 - MySQL
-- SQLAlchemy (if used)
 - Uvicorn (development server)
 
 ## Getting Started
