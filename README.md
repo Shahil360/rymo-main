@@ -30,4 +30,25 @@ A full-stack e-commerce web application built using **FastAPI (Python)** and **M
 - MySQL server
 - pip
 
+## Installation & Setup
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Shahil360/E-Commerce_Web_Application
+cd E-Commerce_Web_Application
+pip install -r requirements.txt
+```
+### 2. Install dependecnies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the backend
+```bash
+cd backend
+uvicorn main:app --reload
+```
+
+
+
 
